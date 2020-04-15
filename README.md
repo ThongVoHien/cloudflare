@@ -1,8 +1,8 @@
-# My application to Cloudflare Workers Internship Application: Full-Stack
+# My application to Cloudflare Internship Application: Full-Stack
 
 ## Instruction
 
-Clone the project and run `wrangler dev`.
+Clone the project and run `wrangler dev` in folder cloudflare_project.
 
 ## Product description
 
