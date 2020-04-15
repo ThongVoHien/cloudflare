@@ -11,35 +11,17 @@ addEventListener('fetch', event => {
  * @param {Request} request
  */
 
-class WebTitle {
+class ReplaceText {
+  constructor(new_text){
+    this.new_text = new_text;
+  }
   text(text) {
     // An incoming piece of text
-    if (text.text.length != 0) text.replace('New title') // prevent repeat twice
+    if (text.text.length != 0) text.replace(this.new_text) // prevent repeat twice
   }
 }
 
-class MainTitle {
-  text(text) {
-    // An incoming piece of text
-    if (text.text.length != 0) text.replace('New Main title') // prevent repeat twice
-  }
-}
-
-class ParagraphDescription {
-  text(text) {
-    // An incoming piece of text
-    if (text.text.length != 0) text.replace('Welcome to new website!!') // prevent repeat twice
-  }
-}
-
-class ActionLink {
-  text(text) {
-    // An incoming piece of text
-    if (text.text.length != 0) text.replace('Click to go to Google!') // prevent repeat twice
-  }
-}
-
-class UrlLink {
+class ReplaceUrlLink {
   constructor(attributeName) {
     this.attributeName = attributeName
   }
@@ -60,12 +42,10 @@ async function handleRequest(request) {
   let json = await fetch('https://cfw-takehome.developers.workers.dev/api/variants');
   let data = await json.json()
 
+  // obtain the random index for the website => This could be run if the number of variants is more than two
   let no_website = data.variants.length
   let website_index = Math.floor(Math.random() * no_website); 
   
-  for(var propName in request.headers) {
-      propValue = request.headers[propName]
-  }
   // Display the keys
   if ( (request) &&  (request.headers.get('cookie') ) ){
   	cookie= request.headers.get('cookie')
@@ -76,25 +56,25 @@ async function handleRequest(request) {
       website_index = 0
   }
 
+  // return the random variant
   let website = data.variants[website_index]
   let response = await fetch(website);
 
-
+  // alter content
   new_response = new HTMLRewriter()
-    .on('title', new WebTitle())
-    // .on('h1#title', new MainTitle())
-    .on('p#description', new ParagraphDescription())
-    .on('a#url', new ActionLink())
-    .on('a', new UrlLink('href'))
+    .on('title', new ReplaceText('New title!'))
+    .on('h1#title', new ReplaceText('This is Main title!'))
+    .on('p#description', new ReplaceText('Welcome to new website!!'))
+    .on('a#url', new ReplaceText('Click to go to Google!!'))
+    .on('a', new ReplaceUrlLink('href'))
     .transform(response)
 
 
-  	new_response.headers = new Headers();
+  new_response.headers = new Headers();
 
 	new_response.headers.append('Content-Type', 'text/html');
 	new_response.headers.append('Set-Cookie', ['type=' + website_index.toString()]);
-	// new_response.credentials = 'same-origin';
 
-    return new_response
+  return new_response
 }
 
