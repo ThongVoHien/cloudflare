@@ -1,0 +1,10 @@
+# My application to Cloudflare Workers Internship Application: Full-Stack
+
+## Instruction
+
+Clone the project and run `wrangler dev`.
+
+## Product description
+
+Finish the three requirements and the first extra credit.
+
