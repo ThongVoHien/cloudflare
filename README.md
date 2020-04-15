@@ -8,3 +8,6 @@ Clone the project and run `wrangler dev`.
 
 Finish the three requirements and the first extra credit.
 
+## Worker link
+
+https://cloudflare_project.vo4.workers.dev
