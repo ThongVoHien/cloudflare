@@ -1,4 +1,9 @@
 addEventListener('fetch', event => {
+  // for(var propName in event) {
+  //     propValue = event[propName]
+
+  //     console.log(propName,propValue);
+  // }
   event.respondWith(handleRequest(event.request))
 })
 /**
@@ -41,6 +46,16 @@ async function handleRequest(request) {
   let no_website = data.variants.length
   let website_index = Math.floor(Math.random() * no_website); 
   
+  // Display the keys
+  if ( (request) &&  (request.headers.get('cookie') ) ){
+  	cookie= request.headers.get('cookie')
+    let index = cookie.search("type")
+    
+    website_index = parseInt( cookie.charAt(index+5) )
+    if ( (website_index >= no_website) || (website_index < 0) )
+      website_index = 0
+  }
+
   // return the random variant
   let website = data.variants[website_index]
   let response = await fetch(website);
@@ -54,6 +69,12 @@ async function handleRequest(request) {
     .on('a', new ReplaceUrlLink('href'))
     .transform(response)
 
-    return new_response
+
+  new_response.headers = new Headers();
+
+	new_response.headers.append('Content-Type', 'text/html');
+	new_response.headers.append('Set-Cookie', ['type=' + website_index.toString()]);
+
+  return new_response
 }
 
