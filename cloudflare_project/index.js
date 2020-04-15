@@ -1,9 +1,4 @@
 addEventListener('fetch', event => {
-  // for(var propName in event) {
-  //     propValue = event[propName]
-
-  //     console.log(propName,propValue);
-  // }
   event.respondWith(handleRequest(event.request))
 })
 /**
@@ -48,7 +43,7 @@ async function handleRequest(request) {
   
   // Display the keys
   if ( (request) &&  (request.headers.get('cookie') ) ){
-  	cookie= request.headers.get('cookie')
+  	cookie = request.headers.get('cookie')
     let index = cookie.search("type")
     
     website_index = parseInt( cookie.charAt(index+5) )
@@ -70,8 +65,8 @@ async function handleRequest(request) {
     .transform(response)
 
 
+  // add Cookie to headers of response
   new_response.headers = new Headers();
-
 	new_response.headers.append('Content-Type', 'text/html');
 	new_response.headers.append('Set-Cookie', ['type=' + website_index.toString()]);
 
