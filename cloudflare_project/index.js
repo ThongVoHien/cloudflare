@@ -58,17 +58,36 @@ async function handleRequest(request) {
   let no_website = data.variants.length
   let website_index = Math.floor(Math.random() * no_website); 
   
+  if ( (request) &&  (request.headers.get('set-cookie') ) ){
+  	website_index = request.headers.get('set-cookie')
+  	for (var prop in website_index)
+  		console.log(prop)
+  	console.log("1Cookie")
+  	console.log(typeof website_index)
+  	console.log(website_index)
+  }
+
   let website = data.variants[website_index]
   let response = await fetch(website);
 
 
   new_response = new HTMLRewriter()
     .on('title', new WebTitle())
-    .on('h1#title', new MainTitle())
+    // .on('h1#title', new MainTitle())
     .on('p#description', new ParagraphDescription())
     .on('a#url', new ActionLink())
     .on('a', new UrlLink('href'))
     .transform(response)
+
+
+  	new_response.headers = new Headers();
+
+	new_response.headers.append('Content-Type', 'text/html');
+	new_response.headers.append('Set-Cookie', ['type=2']);
+	new_response.credentials = 'include';
+
+	console.log("Cookie")
+    console.log(new_response.headers.get('Set-Cookie'))
 
     return new_response
 }
